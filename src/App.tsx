@@ -1,11 +1,7 @@
 import React from 'react';
-import logo from './logo.svg';
 import './App.css';
 import AppBar from "./components/AppBar";
 import { ThemeProvider, createTheme } from '@mui/material/styles';
-import Box from '@mui/material/Box';
-
-import Paper from '@mui/material/Paper';
 import { CssBaseline } from '@mui/material';
 import CreateNote from './components/CreateNote';
 
@@ -31,7 +27,7 @@ function App() {
   })
 
   return (
-    <ThemeProvider theme={darkTheme}>
+    <ThemeProvider theme={lightTheme}>
       <CssBaseline />
       <AppBar />
       <CreateNote />

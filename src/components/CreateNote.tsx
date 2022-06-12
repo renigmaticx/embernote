@@ -2,11 +2,7 @@ import React, { useState } from 'react';
 import { Card, CardContent, Fab, TextField } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import Collapse from '@mui/material/Collapse';
-
 import Zoom from '@mui/material/Zoom';
-import { AnyAaaaRecord } from 'dns';
-import { isBuffer } from 'util';
-import { NoEncryption } from '@mui/icons-material';
 import { styled } from '@mui/material/styles'
 
 export default function () {
@@ -19,23 +15,8 @@ export default function () {
   const [isExpanded, setExpanded] = useState(false);
 
   function handleChange(event: any) {
-    const id = event.target.id;
-    const newInput = event.target.value;
-
-    // Refactor this to map the object values
-    setNote((prevValue) => {
-        if(id === 'note-title'){
-            return{
-                title: prevValue.title,
-                content: newInput
-            }
-        }else{
-            return{
-                title: newInput,
-                content: prevValue.content
-            }
-        }
-    })
+    const {name, value} = event.target
+    setNote((values) => ({...values, [name]: value}));
   };
 
   function handleOnClick(event: any) {
@@ -47,6 +28,7 @@ export default function () {
         });
   }}
 
+  //styled causes input bug that rerenders the card
   const CardContainer = styled('div')(({theme}) => ({
     width: '50%',
     marginLeft: 'auto',
@@ -62,14 +44,14 @@ export default function () {
   return (
     <>
       <Collapse in={isExpanded} collapsedSize={150}>
-        <CardContainer>
-        <Card
+      <Card
         //   sx={{ width: '50%', mx: 'auto', my: '2rem', flexGrow: 1 }}
           variant="outlined"
         >
           <CardContent>
             <TextField
               id="note-title"
+              name="title"
               placeholder='Title'
               value={note.title}
               onChange={handleChange}
@@ -83,7 +65,10 @@ export default function () {
               <>
                 <TextField
                   id="note-content"
+                  name="content"
                   placeholder="Add a note...."
+                  value={note.content}
+                  onChange={handleChange}
                   variant="outlined"
                   multiline
                   size="small"
@@ -106,6 +91,8 @@ export default function () {
             )}
           </CardContent>
         </Card>
+        <CardContainer>
+        
         </CardContainer>
       </Collapse>
     </>
