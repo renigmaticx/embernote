@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './App.css';
 import AppBar from './components/AppBar';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
@@ -8,27 +8,7 @@ import Note from './components/Note';
 import Masonry from '@mui/lab/Masonry';
 
 function App() {
-  const darkTheme = createTheme({
-    palette: {
-      background: { default: '#000000' },
-      mode: 'dark',
-      primary: {
-        main: '#000000'
-      }
-    }
-  });
-
-  const lightTheme = createTheme({
-    palette: {
-      background: { default: '#FFFFFF' },
-      mode: 'light',
-      primary: {
-        main: '#FFF'
-      }
-    }
-  });
-
-  const notes = [
+  const [notes, setNotes] = useState([
     {
       title: 'Umbrosa Helicoseus',
       content:
@@ -59,13 +39,40 @@ function App() {
       content:
         'Lorem ipsum generosa adum el salivosa heretica Lorem ipsum dolor sit'
     }
-  ];
+  ]);
+
+  function handleAddNote(newNote: any) {
+    console.log(newNote);
+    setNotes((values) => {
+      return [newNote, ...values];
+    });
+  }
+
+  const darkTheme = createTheme({
+    palette: {
+      background: { default: '#000000' },
+      mode: 'dark',
+      primary: {
+        main: '#000000'
+      }
+    }
+  });
+
+  const lightTheme = createTheme({
+    palette: {
+      background: { default: '#FFFFFF' },
+      mode: 'light',
+      primary: {
+        main: '#FFF'
+      }
+    }
+  });
 
   return (
-    <ThemeProvider theme={darkTheme}>
+    <ThemeProvider theme={lightTheme}>
       <CssBaseline />
       <AppBar />
-      <CreateNote />
+      <CreateNote onAdd={handleAddNote} />
 
       <Box sx={{ flexGrow: 1, mx: 2 }}>
         <Masonry columns={{ xs: 1, sm: 2, md: 4 }} spacing={1}>

@@ -12,13 +12,13 @@ const CardContainer = styled('div')(({ theme }) => ({
   marginTop: '2rem',
   marginBottom: '2rem',
   flexGrow: 1,
-  [theme.breakpoints.down('sm')]: {
-    width: '100%',
+  [theme.breakpoints.down('md')]: {
+    width: '95%',
     marginTop: '1rem'
   }
 }));
 
-function CreateNote() {
+function CreateNote(props: any) {
   const greetings = 'Ignite ⭐ your ideas 💡 by adding a note. 📔📓';
   const [note, setNote] = useState({
     title: greetings,
@@ -40,6 +40,12 @@ function CreateNote() {
         content: ''
       });
     }
+  }
+
+  function handleAddNote(event: any) {
+    props.onAdd(note);
+    setNote({ title: '', content: '' });
+    setExpanded(false);
   }
 
   return (
@@ -80,7 +86,7 @@ function CreateNote() {
                         size="medium"
                         color="primary"
                         sx={{ position: 'relative', mt: 2, ml: '90%' }}
-                        onClick={() => setExpanded(false)}
+                        onClick={handleAddNote}
                       >
                         <AddIcon />
                       </Fab>
