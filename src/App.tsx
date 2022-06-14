@@ -1,9 +1,10 @@
 import React from 'react';
 import './App.css';
-import AppBar from "./components/AppBar";
+import AppBar from './components/AppBar';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
-import { CssBaseline } from '@mui/material';
+import { CssBaseline, Grid, Box } from '@mui/material';
 import CreateNote from './components/CreateNote';
+import Note from './components/Note';
 
 function App() {
   const darkTheme = createTheme({
@@ -11,28 +12,46 @@ function App() {
       background: { default: '#000000' },
       mode: 'dark',
       primary: {
-        main: '#000000',
-      },
-    },
-  })
+        main: '#000000'
+      }
+    }
+  });
 
   const lightTheme = createTheme({
     palette: {
       background: { default: '#FFFFFF' },
       mode: 'light',
       primary: {
-        main: '#FFF',
-      },
-    },
-  })
+        main: '#FFF'
+      }
+    }
+  });
 
   return (
     <ThemeProvider theme={lightTheme}>
       <CssBaseline />
       <AppBar />
       <CreateNote />
-    </ThemeProvider >
-
+      <Box sx={{ flexGrow: 1, mx: 2 }}>
+        <Grid container spacing={2}>
+          <Grid item xs={12} md={3}>
+            <Note />
+          </Grid>
+          <Grid item xs={12} md={3}>
+            <Note />
+          </Grid>
+          <Grid item xs={12} md={3}>
+            <Note />
+          </Grid>
+          <Grid item xs={12} md={3}>
+            <Note />
+          </Grid>
+          <Grid item xs={12} md={3}>
+            <Note />
+          </Grid>
+        </Grid>
+      </Box>
+    </ThemeProvider>
   );
 }
 
