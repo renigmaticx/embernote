@@ -22,7 +22,6 @@ function Note(props: any) {
 
   return (
     <CardWrapper
-      // this causes a bug that rerenders notes
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
     >
@@ -46,19 +45,21 @@ function Note(props: any) {
             sx={{ outline: '0 solid transparent' }}
             onClick={handleOnClick}
           >
-            {props.content}
+            {props.content.length > 500
+              ? `${props.content.substring(0, 500)} ...`
+              : props.content}
           </Typography>
         </CardContent>
         <Box sx={{ height: 40, display: 'flex', justifyContent: 'end' }}>
           {isHovered && (
             <>
               <Zoom in={isHovered}>
-                <IconButton>
+                <IconButton color="secondary">
                   <ArchiveIcon></ArchiveIcon>
                 </IconButton>
               </Zoom>
               <Zoom in={isHovered}>
-                <IconButton>
+                <IconButton color="secondary">
                   <DeleteIcon></DeleteIcon>
                 </IconButton>
               </Zoom>
