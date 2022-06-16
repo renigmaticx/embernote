@@ -1,5 +1,14 @@
 import React, { useState } from 'react';
-import { Box, Card, CardContent, Fab, TextField } from '@mui/material';
+import {
+  Box,
+  Button,
+  Card,
+  CardContent,
+  Fab,
+  InputBase,
+  TextField,
+  Typography
+} from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import Collapse from '@mui/material/Collapse';
 import Zoom from '@mui/material/Zoom';
@@ -21,8 +30,8 @@ const CardContainer = styled('div')(({ theme }) => ({
 function CreateNote(props: any) {
   const greetings = 'Ignite ⭐ your ideas 💡 by adding a note. 📔📓';
   const [note, setNote] = useState({
-    title: greetings,
-    content: ''
+    title: '',
+    content: greetings
   });
 
   const [isExpanded, setExpanded] = useState(false);
@@ -34,7 +43,7 @@ function CreateNote(props: any) {
 
   function handleOnClick(event: any) {
     setExpanded(true);
-    if (event.target.id === 'note-title' && note.title === greetings) {
+    if (event.target.id === 'note-content' && note.content === greetings) {
       setNote({
         title: '',
         content: ''
@@ -43,7 +52,7 @@ function CreateNote(props: any) {
   }
 
   function handleAddNote(event: any) {
-    props.onAdd(note);
+    (!!note.content || !!note.title) && props.onAdd(note);
     setNote({ title: '', content: '' });
     setExpanded(false);
   }
@@ -54,45 +63,45 @@ function CreateNote(props: any) {
         <CardContainer>
           <Card elevation={4}>
             <CardContent>
+              {isExpanded && (
+                <TextField
+                  id="note-title"
+                  name="title"
+                  placeholder="Title"
+                  value={note.title}
+                  onChange={handleChange}
+                  color="primary"
+                  size="small"
+                  fullWidth
+                />
+              )}
               <TextField
-                id="note-title"
-                name="title"
-                placeholder="Title"
-                value={note.title}
+                id="note-content"
+                name="content"
+                placeholder="Add a note...."
+                value={note.content}
                 onChange={handleChange}
-                color="primary"
                 variant="outlined"
+                multiline
                 size="small"
                 fullWidth
+                margin="dense"
                 onClick={handleOnClick}
               />
               {isExpanded && (
-                <>
-                  <TextField
-                    id="note-content"
-                    name="content"
-                    placeholder="Add a note...."
-                    value={note.content}
-                    onChange={handleChange}
-                    variant="outlined"
-                    multiline
-                    size="small"
-                    fullWidth
-                    margin="dense"
-                  />
-                  <Box sx={{ display: 'block', width: '100%' }}>
-                    <Zoom in={isExpanded}>
-                      <Fab
-                        size="medium"
-                        color="primary"
-                        sx={{ position: 'relative', mt: 2, ml: '90%' }}
-                        onClick={handleAddNote}
-                      >
-                        <AddIcon />
-                      </Fab>
-                    </Zoom>
-                  </Box>
-                </>
+                <Box
+                  sx={{
+                    display: 'flex',
+                    mb: -3,
+                    justifyContent: 'end'
+                  }}
+                >
+                  <Zoom in={isExpanded}>
+                    <Button color="secondary" onClick={handleAddNote}>
+                      Add note
+                    </Button>
+                  </Zoom>
+                </Box>
               )}
             </CardContent>
           </Card>

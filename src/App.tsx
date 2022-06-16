@@ -54,13 +54,32 @@ function App() {
           primary: {
             light: '#fff',
             main: '#fff',
+            dark: '#000',
+            contrastText: '#000'
+          },
+          secondary: {
+            light: '#fff',
+            main: '#000',
             dark: '#fff',
             contrastText: '#000'
           }
         }
       },
       dark: {
-        palette: {}
+        palette: {
+          primary: {
+            light: '#fff',
+            main: '#000',
+            dark: '#000',
+            contrastText: '#000'
+          },
+          secondary: {
+            light: '#fff',
+            main: '#fff',
+            dark: '#fff',
+            contrastText: '#000'
+          }
+        }
       }
     }
   });
