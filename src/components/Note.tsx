@@ -20,9 +20,19 @@ function Note(props: any) {
     setExpanded(true);
   }
 
+  function handleOnDelete() {
+    props.onDelete(props.id);
+  }
+
+  function handleOnArchive() {
+    props.onArchive(props.id);
+  }
+
   return (
     <CardWrapper
-      onMouseEnter={() => setHovered(true)}
+      onMouseEnter={() => {
+        setHovered(true);
+      }}
       onMouseLeave={() => setHovered(false)}
     >
       <Card variant="outlined">
@@ -54,12 +64,12 @@ function Note(props: any) {
           {isHovered && (
             <>
               <Zoom in={isHovered}>
-                <IconButton color="secondary">
+                <IconButton color="secondary" onClick={handleOnArchive}>
                   <ArchiveIcon></ArchiveIcon>
                 </IconButton>
               </Zoom>
               <Zoom in={isHovered}>
-                <IconButton color="secondary">
+                <IconButton color="secondary" onClick={handleOnDelete}>
                   <DeleteIcon></DeleteIcon>
                 </IconButton>
               </Zoom>

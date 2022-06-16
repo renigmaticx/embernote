@@ -14,6 +14,8 @@ import {
 import { amber } from '@mui/material/colors';
 
 function App() {
+  const trashedNotes = [];
+  const archivedNotes = [];
   const [notes, setNotes] = useState([
     {
       title: 'Umbrosa Helicoseus',
@@ -84,10 +86,27 @@ function App() {
     }
   });
 
-  function handleAddNote(newNote: any) {
-    console.log(newNote);
+  function addNote(newNote: any) {
     setNotes((values) => {
       return [newNote, ...values];
+    });
+  }
+
+  function deleteNote(id: number) {
+    trashedNotes.push(notes[id]);
+    setNotes((values) => {
+      return values.filter((noteItem, index) => {
+        return index !== id;
+      });
+    });
+  }
+
+  function archiveNote(id: number) {
+    archivedNotes.push(notes[id]);
+    setNotes((values) => {
+      return values.filter((noteItem, index) => {
+        return index !== id;
+      });
     });
   }
 
@@ -95,7 +114,7 @@ function App() {
     <CssVarsProvider theme={theme}>
       <CssBaseline />
       <AppBar />
-      <CreateNote onAdd={handleAddNote} />
+      <CreateNote onAdd={addNote} />
 
       <Box sx={{ flexGrow: 1, mx: 2 }}>
         <Masonry columns={{ xs: 1, sm: 2, md: 4 }} spacing={1}>
@@ -105,6 +124,8 @@ function App() {
               id={index}
               title={note.title}
               content={note.content}
+              onDelete={deleteNote}
+              onArchive={archiveNote}
             />
           ))}
         </Masonry>
