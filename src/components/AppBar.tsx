@@ -1,5 +1,4 @@
 import * as React from 'react';
-
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
@@ -7,32 +6,23 @@ import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 import Menu from '@mui/material/Menu';
 import MenuIcon from '@mui/icons-material/Menu';
-import LightModeIcon from '@mui/icons-material/LightMode';
-import DarkModeIcon from '@mui/icons-material/DarkMode';
 import Container from '@mui/material/Container';
 import Avatar from '@mui/material/Avatar';
-import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import WhatshotIcon from '@mui/icons-material/Whatshot';
-import { ThemeProvider, createTheme } from '@mui/material/styles';
 import SearchBar from './SearchBar';
+import ThemeSwitcher from './ThemeSwitcher';
 
 const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
 
-
 function ResponsiveAppBar(props: any) {
-  const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
-  const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
-
-  const [theme, setTheme] = React.useState('light');
-
-  const handleTheme = () => {
-    setTheme(() => {
-      if(theme === 'light') return 'dark'
-      else return 'light'
-    });
-  };
+  const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(
+    null
+  );
+  const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(
+    null
+  );
 
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElNav(event.currentTarget);
@@ -50,7 +40,7 @@ function ResponsiveAppBar(props: any) {
   };
 
   return (
-    <AppBar position="static" >
+    <AppBar position="static">
       <Container maxWidth="xl">
         <Toolbar disableGutters>
           <Box sx={{ display: { md: 'flex' } }}>
@@ -64,7 +54,6 @@ function ResponsiveAppBar(props: any) {
             >
               <MenuIcon />
             </IconButton>
-
           </Box>
           <WhatshotIcon sx={{ display: { md: 'flex' }, mx: 1 }} />
           <Typography
@@ -79,29 +68,17 @@ function ResponsiveAppBar(props: any) {
               fontWeight: 700,
               letterSpacing: '.3rem',
               color: 'inherit',
-              textDecoration: 'none',
+              textDecoration: 'none'
             }}
           >
-            EMBERNOTE
+            UPNOTE
           </Typography>
           <Box sx={{ display: { md: 'flex' }, ml: 'auto', mr: 1 }}>
             <SearchBar />
           </Box>
 
-          <Box sx={{ display: { md: 'flex' }, mr: 1}}>
-            <IconButton
-              size="large"
-              aria-label="switch theme"
-              aria-controls="switch-theme"
-              onClick={handleTheme}
-              color="inherit"
-            >
-              {theme === 'light' ? <DarkModeIcon /> : <LightModeIcon />}
-            </IconButton>
-
-          </Box>
+          <ThemeSwitcher />
           <Box sx={{ flexGrow: 0 }}>
-          
             <Tooltip title="Open settings">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
                 <Avatar alt="Guest" />
@@ -113,12 +90,12 @@ function ResponsiveAppBar(props: any) {
               anchorEl={anchorElUser}
               anchorOrigin={{
                 vertical: 'top',
-                horizontal: 'right',
+                horizontal: 'right'
               }}
               keepMounted
               transformOrigin={{
                 vertical: 'top',
-                horizontal: 'right',
+                horizontal: 'right'
               }}
               open={Boolean(anchorElUser)}
               onClose={handleCloseUserMenu}
@@ -134,5 +111,5 @@ function ResponsiveAppBar(props: any) {
       </Container>
     </AppBar>
   );
-};
+}
 export default ResponsiveAppBar;

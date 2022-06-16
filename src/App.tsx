@@ -6,6 +6,12 @@ import { CssBaseline, Grid, Box } from '@mui/material';
 import CreateNote from './components/CreateNote';
 import Note from './components/Note';
 import Masonry from '@mui/lab/Masonry';
+import {
+  Experimental_CssVarsProvider as CssVarsProvider,
+  useColorScheme,
+  experimental_extendTheme
+} from '@mui/material/styles';
+import { amber } from '@mui/material/colors';
 
 function App() {
   const [notes, setNotes] = useState([
@@ -41,6 +47,24 @@ function App() {
     }
   ]);
 
+  const theme = experimental_extendTheme({
+    colorSchemes: {
+      light: {
+        palette: {
+          primary: {
+            light: '#fff',
+            main: '#fff',
+            dark: '#fff',
+            contrastText: '#000'
+          }
+        }
+      },
+      dark: {
+        palette: {}
+      }
+    }
+  });
+
   function handleAddNote(newNote: any) {
     console.log(newNote);
     setNotes((values) => {
@@ -48,28 +72,8 @@ function App() {
     });
   }
 
-  const darkTheme = createTheme({
-    palette: {
-      background: { default: '#000000' },
-      mode: 'dark',
-      primary: {
-        main: '#000000'
-      }
-    }
-  });
-
-  const lightTheme = createTheme({
-    palette: {
-      background: { default: '#FFFFFF' },
-      mode: 'light',
-      primary: {
-        main: '#FFF'
-      }
-    }
-  });
-
   return (
-    <ThemeProvider theme={lightTheme}>
+    <CssVarsProvider theme={theme}>
       <CssBaseline />
       <AppBar />
       <CreateNote onAdd={handleAddNote} />
@@ -86,7 +90,7 @@ function App() {
           ))}
         </Masonry>
       </Box>
-    </ThemeProvider>
+    </CssVarsProvider>
   );
 }
 
