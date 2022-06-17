@@ -36,16 +36,10 @@ function Note(props: any) {
     >
       <Card variant="outlined">
         <CardContent sx={{ paddingBottom: 0 }}>
-          <Typography
-            variant="subtitle2"
-            onClick={handleOnClick}
-          >
+          <Typography variant="subtitle2" onClick={handleOnClick}>
             {props.title}
           </Typography>
-          <Typography
-            variant="body2"
-            onClick={handleOnClick}
-          >
+          <Typography variant="body2" onClick={handleOnClick}>
             {props.content.length > 500
               ? `${props.content.substring(0, 500)} ...`
               : props.content}
@@ -55,12 +49,12 @@ function Note(props: any) {
           {isHovered && (
             <>
               <Zoom in={isHovered}>
-                <IconButton color="secondary" onClick={handleOnArchive}>
+                <IconButton color="info" onClick={handleOnArchive}>
                   <ArchiveIcon></ArchiveIcon>
                 </IconButton>
               </Zoom>
               <Zoom in={isHovered}>
-                <IconButton color="secondary" onClick={handleOnDelete}>
+                <IconButton color="error" onClick={handleOnDelete}>
                   <DeleteIcon></DeleteIcon>
                 </IconButton>
               </Zoom>
