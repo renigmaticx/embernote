@@ -13,11 +13,10 @@ const CardWrapper = styled('div')(({ theme }) => ({
 }));
 
 function Note(props: any) {
-  const [isExpanded, setExpanded] = useState(false);
   const [isHovered, setHovered] = useState(false);
 
-  function handleOnClick(event: any) {
-    setExpanded(true);
+  function handleOnClick() {
+    props.onOpen(props, 'paper');
   }
 
   function handleOnDelete() {
@@ -38,21 +37,13 @@ function Note(props: any) {
       <Card variant="outlined">
         <CardContent sx={{ paddingBottom: 0 }}>
           <Typography
-            suppressContentEditableWarning={true}
-            contentEditable={true}
             variant="subtitle2"
-            spellCheck={false}
-            sx={{ outline: '0 solid transparent' }}
             onClick={handleOnClick}
           >
             {props.title}
           </Typography>
           <Typography
-            suppressContentEditableWarning={true}
-            contentEditable={true}
             variant="body2"
-            spellCheck={false}
-            sx={{ outline: '0 solid transparent' }}
             onClick={handleOnClick}
           >
             {props.content.length > 500

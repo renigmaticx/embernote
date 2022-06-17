@@ -1,21 +1,24 @@
 import React, { useState } from 'react';
 import './App.css';
 import AppBar from './components/AppBar';
-import { ThemeProvider, createTheme } from '@mui/material/styles';
-import { CssBaseline, Grid, Box } from '@mui/material';
+import { CssBaseline, Box } from '@mui/material';
 import CreateNote from './components/CreateNote';
 import Note from './components/Note';
 import Masonry from '@mui/lab/Masonry';
 import {
   Experimental_CssVarsProvider as CssVarsProvider,
-  useColorScheme,
   experimental_extendTheme
 } from '@mui/material/styles';
-import { amber } from '@mui/material/colors';
+import { DialogProps } from '@mui/material/Dialog';
+import NoteDialog from './components/NoteDialog';
 
 function App() {
   const trashedNotes = [];
   const archivedNotes = [];
+
+  const [editMode, setEditMode] = useState(false);
+  const [scroll, setScroll] = useState<DialogProps['scroll']>('paper');
+  const [note, setNote] = useState({ _id: Number, title: '', content: '' });
   const [notes, setNotes] = useState([
     {
       title: 'Umbrosa Helicoseus',
@@ -61,7 +64,7 @@ function App() {
           },
           secondary: {
             light: '#cfcfcf',
-            main: '#9e9e9e',
+            main: '#000000',
             dark: '#707070',
             contrastText: '#000000'
           }
@@ -85,6 +88,26 @@ function App() {
       }
     }
   });
+
+  function openNoteDialog(props: any, scrollType: DialogProps['scroll']) {
+    setEditMode(true);
+    setScroll(scrollType);
+    setNote({ _id: props.id, title: props.title, content: props.content });
+  }
+
+  const closeNoteDialog = () => {
+    setEditMode(false);
+  };
+
+  const descriptionElementRef = React.useRef<HTMLElement>(null);
+  React.useEffect(() => {
+    if (editMode) {
+      const { current: descriptionElement } = descriptionElementRef;
+      if (descriptionElement !== null) {
+        descriptionElement.focus();
+      }
+    }
+  }, [editMode]);
 
   function addNote(newNote: any) {
     setNotes((values) => {
@@ -115,7 +138,15 @@ function App() {
       <CssBaseline />
       <AppBar />
       <CreateNote onAdd={addNote} />
-
+      {editMode && (
+        <NoteDialog
+          open={editMode}
+          onClose={closeNoteDialog}
+          scroll={scroll}
+          descriptionElementRef={descriptionElementRef}
+          note={note}
+        />
+      )}
       <Box sx={{ flexGrow: 1, mx: 2 }}>
         <Masonry columns={{ xs: 1, sm: 2, md: 4 }} spacing={1}>
           {notes.map((note, index) => (
@@ -126,6 +157,7 @@ function App() {
               content={note.content}
               onDelete={deleteNote}
               onArchive={archiveNote}
+              onOpen={openNoteDialog}
             />
           ))}
         </Masonry>
