@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import './App.css';
 import AppBar from './components/AppBar';
-import { CssBaseline, Box } from '@mui/material';
+import { CssBaseline, Box, Button, Typography } from '@mui/material';
 import CreateNote from './components/CreateNote';
 import Note from './components/Note';
 import Masonry from '@mui/lab/Masonry';
@@ -19,38 +19,15 @@ function App() {
   const [editMode, setEditMode] = useState(false);
   const [scroll, setScroll] = useState<DialogProps['scroll']>('paper');
   const [note, setNote] = useState({ _id: Number, title: '', content: '' });
-  const [notes, setNotes] = useState([
-    {
-      title: 'Umbrosa Helicoseus',
-      content:
-        'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In nec lacus non dolor imperdiet ornare. Sed ut congue lectus. Vestibulum congue nisl sed leo pulvinar dapibus. Morbi arcu velit, consectetur eget placerat in, suscipit ut est. Duis pharetra, odio vel posuere rhoncus, leo velit tempus diam, eget viverra lectus urna eu massa. Pellentesque fermentum nibh eros, ac rutrum urna congue eu. Curabitur rhoncus, arcu non pharetra vehicula, lorem tortor aliquam risus, vel pharetra massa risus interdum tortor. Integer porta porta sapien a porttitor.'
-    },
-    {
-      title: 'Umbrosa Helicoseus',
-      content:
-        'Lorem ipsum generosa adum el salivosa heretica Lorem ipsum dolor sit'
-    },
-    {
-      title: 'Umbrosa Helicoseus',
-      content:
-        'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In nec lacus non dolor imperdiet ornare. Sed ut congue lectus. Vestibulum congue nisl sed leo pulvinar dapibus. Morbi arcu velit, consectetur eget placerat in, suscipit ut est. Duis pharetra, odio vel posuere rhoncus, leo velit tempus diam, eget viverra lectus urna eu massa.'
-    },
-    {
-      title: 'Umbrosa Helicoseus',
-      content:
-        'Lorem ipsum generosa adum el salivosa heretica Lorem ipsum dolor sit'
-    },
-    {
-      title: 'Umbrosa Helicoseus',
-      content:
-        'Lorem ipsum generosa adum el salivosa heretica Lorem ipsum dolor sit'
-    },
-    {
-      title: 'Umbrosa Helicoseus',
-      content:
-        'Lorem ipsum generosa adum el salivosa heretica Lorem ipsum dolor sit'
-    }
-  ]);
+  const [notes, setNotes] = useState<any>([{}]);
+
+  useEffect(() => {
+    fetch('/api')
+      .then((response) => response.json())
+      .then((data) => {
+        setNotes(data);
+      });
+  }, []);
 
   const theme = experimental_extendTheme({
     colorSchemes: {
@@ -116,7 +93,7 @@ function App() {
   }
 
   function deleteNote(id: number) {
-    trashedNotes.push(notes[id]);
+    //trashedNotes.push(notes[id]);
     setNotes((values) => {
       return values.filter((noteItem, index) => {
         return index !== id;
@@ -125,7 +102,7 @@ function App() {
   }
 
   function archiveNote(id: number) {
-    archivedNotes.push(notes[id]);
+    //archivedNotes.push(notes[id]);
     setNotes((values) => {
       return values.filter((noteItem, index) => {
         return index !== id;
@@ -137,6 +114,15 @@ function App() {
     <CssVarsProvider theme={theme}>
       <CssBaseline />
       <AppBar />
+      <Button
+        color="secondary"
+        onClick={() => {
+          console.log(notes);
+          console.log(notes.data);
+        }}
+      >
+        Log
+      </Button>
       <CreateNote onAdd={addNote} />
       {editMode && (
         <NoteDialog
@@ -149,17 +135,18 @@ function App() {
       )}
       <Box sx={{ flexGrow: 1, mx: 2 }}>
         <Masonry columns={{ xs: 1, sm: 2, md: 4 }} spacing={1}>
-          {notes.map((note, index) => (
-            <Note
-              key={index}
-              id={index}
-              title={note.title}
-              content={note.content}
-              onDelete={deleteNote}
-              onArchive={archiveNote}
-              onOpen={openNoteDialog}
-            />
-          ))}
+          {typeof notes.data !== 'undefined' &&
+            notes.data.map((note, index) => (
+              <Note
+                key={index}
+                id={index}
+                title={note.title}
+                content={note.content}
+                onDelete={deleteNote}
+                onArchive={archiveNote}
+                onOpen={openNoteDialog}
+              />
+            ))}
         </Masonry>
       </Box>
     </CssVarsProvider>
