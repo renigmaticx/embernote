@@ -40,7 +40,7 @@ function Note(props: any) {
             {props.title}
           </Typography>
           <Typography variant="body2" onClick={handleOnClick}>
-            {props.content.length > 500
+            {props.content?.length > 500
               ? `${props.content.substring(0, 500)} ...`
               : props.content}
           </Typography>

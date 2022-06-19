@@ -11,6 +11,7 @@ import {
 } from '@mui/material/styles';
 import { DialogProps } from '@mui/material/Dialog';
 import NoteDialog from './components/NoteDialog';
+import NoteDataService from './services/note';
 
 function App() {
   const trashedNotes = [];
@@ -22,12 +23,17 @@ function App() {
   const [notes, setNotes] = useState<any>([{}]);
 
   useEffect(() => {
-    fetch('/api')
-      .then((response) => response.json())
-      .then((data) => {
-        setNotes(data);
-      });
+    retrieveNotes();
   }, []);
+
+  const retrieveNotes = () => {
+    NoteDataService.getAll()
+      .then((response) => {
+        console.log(response.data);
+        setNotes(response.data);
+      })
+      .catch((e) => console.log(e));
+  };
 
   const theme = experimental_extendTheme({
     colorSchemes: {
@@ -135,18 +141,17 @@ function App() {
       )}
       <Box sx={{ flexGrow: 1, mx: 2 }}>
         <Masonry columns={{ xs: 1, sm: 2, md: 4 }} spacing={1}>
-          {typeof notes.data !== 'undefined' &&
-            notes.data.map((note, index) => (
-              <Note
-                key={index}
-                id={index}
-                title={note.title}
-                content={note.content}
-                onDelete={deleteNote}
-                onArchive={archiveNote}
-                onOpen={openNoteDialog}
-              />
-            ))}
+          {notes.map((note, index) => (
+            <Note
+              key={index}
+              id={index}
+              title={note?.title}
+              content={note?.content}
+              onDelete={deleteNote}
+              onArchive={archiveNote}
+              onOpen={openNoteDialog}
+            />
+          ))}
         </Masonry>
       </Box>
     </CssVarsProvider>
