@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import './App.css';
 import AppBar from './components/AppBar';
 import { CssBaseline, Box, Button, Typography } from '@mui/material';
@@ -12,6 +13,7 @@ import {
 import { DialogProps } from '@mui/material/Dialog';
 import NoteDialog from './components/NoteDialog';
 import NoteDataService from './services/note';
+import Login from './components/Login';
 
 function App() {
   const trashedNotes = [];
@@ -119,41 +121,53 @@ function App() {
   return (
     <CssVarsProvider theme={theme}>
       <CssBaseline />
-      <AppBar />
-      <Button
-        color="secondary"
-        onClick={() => {
-          console.log(notes);
-          console.log(notes.data);
-        }}
-      >
-        Log
-      </Button>
-      <CreateNote onAdd={addNote} />
-      {editMode && (
-        <NoteDialog
-          open={editMode}
-          onClose={closeNoteDialog}
-          scroll={scroll}
-          descriptionElementRef={descriptionElementRef}
-          note={note}
-        />
-      )}
-      <Box sx={{ flexGrow: 1, mx: 2 }}>
-        <Masonry columns={{ xs: 1, sm: 2, md: 4 }} spacing={1}>
-          {notes.map((note, index) => (
-            <Note
-              key={index}
-              id={index}
-              title={note?.title}
-              content={note?.content}
-              onDelete={deleteNote}
-              onArchive={archiveNote}
-              onOpen={openNoteDialog}
-            />
-          ))}
-        </Masonry>
-      </Box>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/login" element={<Login />} />
+          <Route
+            path="/"
+            element={
+              <>
+                <AppBar />
+                <Button
+                  color="secondary"
+                  onClick={() => {
+                    console.log(notes);
+                    console.log(notes.data);
+                  }}
+                >
+                  Log
+                </Button>
+                <CreateNote onAdd={addNote} />
+                {editMode && (
+                  <NoteDialog
+                    open={editMode}
+                    onClose={closeNoteDialog}
+                    scroll={scroll}
+                    descriptionElementRef={descriptionElementRef}
+                    note={note}
+                  />
+                )}
+                <Box sx={{ flexGrow: 1, mx: 2 }}>
+                  <Masonry columns={{ xs: 1, sm: 2, md: 4 }} spacing={1}>
+                    {notes.map((note, index) => (
+                      <Note
+                        key={index}
+                        id={index}
+                        title={note?.title}
+                        content={note?.content}
+                        onDelete={deleteNote}
+                        onArchive={archiveNote}
+                        onOpen={openNoteDialog}
+                      />
+                    ))}
+                  </Masonry>
+                </Box>
+              </>
+            }
+          />
+        </Routes>
+      </BrowserRouter>
     </CssVarsProvider>
   );
 }

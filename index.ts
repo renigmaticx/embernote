@@ -2,6 +2,7 @@ import app from './server';
 import * as mongodb from 'mongodb';
 import dotenv from 'dotenv';
 import NotesDAO from './src/dao/notesDAO';
+import UsersDAO from './src/dao/usersDAO';
 
 dotenv.config();
 export const { NOTES_DB_URI, DB_NAME } = process.env as {
@@ -20,6 +21,7 @@ mongoClient
 	.then(async (client) => {
 		//inject DB
 		await NotesDAO.injectDB(client);
+		await UsersDAO.injectDB(client);
 		app.listen(port, () => {
 			console.log(`Server running on port ${port}`);
 		});

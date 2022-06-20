@@ -2,7 +2,7 @@ import http from '../http-common';
 
 class NoteDataService {
   getAll() {
-    return http.get('');
+    return http.get('/api/v1/notes');
   }
 }
 
