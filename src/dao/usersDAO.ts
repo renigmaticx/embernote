@@ -24,6 +24,30 @@ export default class UsersDAO {
 		}
 	}
 
+	static async getRefreshToken(username: string, token: string) {
+		try {
+			const result = users.findOne({
+				username: username,
+				refreshTokens: [token],
+			});
+			return result;
+		} catch (e) {
+			console.error(`Unable to issue command on getRefreshTokens, ${e}`);
+		}
+	}
+
+	static async addRefreshToken(username: string, token: string) {
+		try {
+			const result = await users.updateOne(
+				{ username: username },
+				{ $push: { refreshTokens: token } }
+			);
+			return result;
+		} catch (e) {
+			console.error(`Unable to issue command on addRefreshToken, ${e}`);
+		}
+	}
+
 	static async registerUser(username: string, password: string) {
 		try {
 			const user = await users.updateOne(

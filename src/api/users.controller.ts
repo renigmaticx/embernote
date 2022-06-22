@@ -2,24 +2,31 @@ import UsersDAO from '../dao/usersDAO';
 import { Request, Response } from 'express';
 import * as argon2 from 'argon2';
 import * as jwtHelper from './../helpers/jwt.helper';
+import { JsonWebTokenError } from 'jsonwebtoken';
 
 export default class UsersController {
 	static async token(req: Request, res: Response, next: Function) {}
 
+	//generates a valid expiring accessToken when user has a refreshToken
 	static async getAccessToken(req: Request, res: Response, next: Function) {
 		console.log('getAccessToken');
+		const username = req.body.username;
+		const refreshToken = req.body.refreshToken;
+		if (!refreshToken) return res.sendStatus(401);
 
-		if (!req.user) return res.sendStatus(401);
-		const refreshToken = jwtHelper.GenerateRefreshToken(req.user as object);
-
-		//Check the list of valid refreshTokens
-		//if(!refreshTokens.includes(refreshToken)) return res.send(403);
-
-		//PASS
+		//get refreshTokens from db
+		const result = await UsersDAO.getRefreshToken(username, refreshToken);
+		if (!result) return res.send(403);
+		//if refresh token is valid, verify the jwt
 		const user = jwtHelper.VerifyToken(refreshToken, 'refresh');
-		if (!user) return res.sendStatus(403);
-		const accessToken = jwtHelper.GenerateAccessToken(user, '30s');
-		res.json({ accessToken });
+		//using the payload generate the accessToken
+		const accessToken = jwtHelper.GenerateAccessToken(
+			{ _id: user?._id, username: user?.username },
+			'60s'
+		);
+		res.json({
+			accessToken: accessToken,
+		});
 	}
 
 	static async login(req: Request, res: Response, next: Function) {
@@ -32,18 +39,17 @@ export default class UsersController {
 		if (user) {
 			try {
 				if (await argon2.verify(hash, password)) {
-					//generate refresh then => jwt access token
-					const token = jwtHelper.GenerateAccessToken(user, '5h');
+					//generate refresh token and store the refresh token to db
+					const refreshToken = jwtHelper.GenerateRefreshToken(user);
+					const result = UsersDAO.addRefreshToken(username, refreshToken);
 					res.status(200).send({
-						userId: user?._id,
-						username: user?.username,
-						accessToken: token,
+						refreshToken: refreshToken,
 					});
 				} else {
 					res.status(401).send('Unauthorized');
 				}
 			} catch (error) {
-				console.error(`Password argon2 verification failed ${error}`);
+				console.error(`An error occured, ${error}`);
 			}
 		}
 	}
@@ -64,6 +70,7 @@ export default class UsersController {
 		}
 	}
 
+	// using header `Authorization: Bearer TOKEN` to verify if the token is valid.
 	static async authenticateToken(req: Request, res: Response, next: Function) {
 		console.log('authenticateToken');
 		const authHeader = req.headers['authorization'];
@@ -76,8 +83,10 @@ export default class UsersController {
 		if (!user) return res.sendStatus(403);
 		req.user = user;
 		console.log(user);
-		//set req.user ?? but how
-		next();
+
+		//do not forget this next
+		res.sendStatus(200);
+		//next();
 	}
 
 	static async getTest(req: Request, res: Response, next: Function) {

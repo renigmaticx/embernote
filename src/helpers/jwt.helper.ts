@@ -1,9 +1,10 @@
 import jwt from 'jsonwebtoken';
 import { ACCESS_TOKEN_SECRET, REFRESH_TOKEN_SECRET } from '../..';
+import { User } from '../types/types';
 
 export function GenerateAccessToken<T extends object>(
 	payload: T,
-	timeOut: string = '5h'
+	timeOut: string = '15m'
 ): string {
 	return jwt.sign(payload, ACCESS_TOKEN_SECRET, { expiresIn: timeOut });
 }
@@ -12,7 +13,7 @@ export function GenerateRefreshToken<T extends object>(payload: T): string {
 	return jwt.sign(payload, REFRESH_TOKEN_SECRET);
 }
 
-export function VerifyToken<T extends object>(
+export function VerifyToken<T extends User>(
 	token: string,
 	tokenType: 'refresh' | 'access'
 ): T | undefined {
