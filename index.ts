@@ -5,7 +5,12 @@ import NotesDAO from './src/dao/notesDAO';
 import UsersDAO from './src/dao/usersDAO';
 
 dotenv.config();
-export const { NOTES_DB_URI, DB_NAME } = process.env as {
+export const {
+	NOTES_DB_URI,
+	DB_NAME,
+	ACCESS_TOKEN_SECRET,
+	REFRESH_TOKEN_SECRET,
+} = process.env as {
 	[key: string]: string;
 };
 const mongoClient: mongodb.MongoClient = new mongodb.MongoClient(NOTES_DB_URI);
