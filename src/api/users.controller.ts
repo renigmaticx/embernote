@@ -9,14 +9,14 @@ export default class UsersController {
 
 	//generates a valid expiring accessToken when user has a refreshToken
 	static async getAccessToken(req: Request, res: Response, next: Function) {
-		console.log('getAccessToken');
 		const username = req.body.username;
 		const refreshToken = req.body.refreshToken;
+		console.log(`getAccessToken: ${username} ${refreshToken}`);
 		if (!refreshToken) return res.sendStatus(401);
 
 		//get refreshTokens from db
 		const result = await UsersDAO.getRefreshToken(username, refreshToken);
-		if (!result) return res.send(403);
+		if (!result) return res.sendStatus(403);
 		//if refresh token is valid, verify the jwt
 		const user = jwtHelper.VerifyToken(refreshToken, 'refresh');
 		//using the payload generate the accessToken
@@ -40,9 +40,14 @@ export default class UsersController {
 			try {
 				if (await argon2.verify(hash, password)) {
 					//generate refresh token and store the refresh token to db
-					const refreshToken = jwtHelper.GenerateRefreshToken(user);
+					const refreshToken = jwtHelper.GenerateRefreshToken({
+						_id: user._id,
+						username: user.username,
+					});
 					const result = UsersDAO.addRefreshToken(username, refreshToken);
 					res.status(200).send({
+						userId: user._id,
+						username: user.username,
 						refreshToken: refreshToken,
 					});
 				} else {

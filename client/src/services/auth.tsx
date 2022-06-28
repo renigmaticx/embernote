@@ -8,6 +8,10 @@ class AuthService {
   register(user: any) {
     return http.post('/user/register', user);
   }
+
+  getAccessToken(user: any) {
+    return http.post('/user/token', user);
+  }
 }
 
 export default new AuthService();

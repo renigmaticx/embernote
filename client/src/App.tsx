@@ -6,73 +6,57 @@ import { CssBaseline, Box, Button, Typography } from '@mui/material';
 import CreateNote from './components/CreateNote';
 import Note from './components/Note';
 import Masonry from '@mui/lab/Masonry';
-import {
-  Experimental_CssVarsProvider as CssVarsProvider,
-  experimental_extendTheme
-} from '@mui/material/styles';
+import { Experimental_CssVarsProvider as CssVarsProvider } from '@mui/material/styles';
 import { DialogProps } from '@mui/material/Dialog';
 import NoteDialog from './components/NoteDialog';
 import NoteDataService from './services/note';
 import Login from './components/Login';
+import theme from './components/Theme';
+import AuthService from './services/auth';
 
 function App() {
   const trashedNotes = [];
   const archivedNotes = [];
 
+  const [user, setUser] = useState({
+    userId: '',
+    username: '',
+    refreshToken: ''
+  });
   const [editMode, setEditMode] = useState(false);
   const [scroll, setScroll] = useState<DialogProps['scroll']>('paper');
   const [note, setNote] = useState({ _id: Number, title: '', content: '' });
   const [notes, setNotes] = useState<any>([{}]);
 
-  useEffect(() => {
-    retrieveNotes();
-  }, []);
+  const getLocalUser = () => {
+    const token = window.localStorage.getItem('canislupus');
+    const localUser = JSON.parse(window.localStorage.getItem('user') || '{}');
+    if (token && localUser) {
+      setUser({
+        userId: localUser.userId,
+        username: localUser.username,
+        refreshToken: token
+      });
+    }
+  };
+
+  const requestAccessToken = () => {
+    AuthService.getAccessToken(user)
+      .then((response) => {
+        window.localStorage.setItem('feliscatus', response.data.accessToken);
+      })
+      .catch((e) => console.error(e));
+  };
 
   const retrieveNotes = () => {
-    NoteDataService.getAll()
+    NoteDataService.getNotes({ userId: user.userId })
       .then((response) => {
-        console.log(response.data);
-        setNotes(response.data);
+        console.log(response);
+        const notesList = response.data.notes_list;
+        notesList && setNotes(notesList);
       })
       .catch((e) => console.log(e));
   };
-
-  const theme = experimental_extendTheme({
-    colorSchemes: {
-      light: {
-        palette: {
-          primary: {
-            light: '#ffffff',
-            main: '#ffffff',
-            dark: '#cccccc',
-            contrastText: '#000000'
-          },
-          secondary: {
-            light: '#cfcfcf',
-            main: '#000000',
-            dark: '#707070',
-            contrastText: '#000000'
-          }
-        }
-      },
-      dark: {
-        palette: {
-          primary: {
-            light: '#2c2c2c',
-            main: '#000000',
-            dark: '#000000',
-            contrastText: '#ffffff'
-          },
-          secondary: {
-            light: '#ffffff',
-            main: '#ffffff',
-            dark: '#cccccc',
-            contrastText: '#000000'
-          }
-        }
-      }
-    }
-  });
 
   function openNoteDialog(props: any, scrollType: DialogProps['scroll']) {
     setEditMode(true);
@@ -95,9 +79,12 @@ function App() {
   }, [editMode]);
 
   function addNote(newNote: any) {
-    setNotes((values) => {
-      return [newNote, ...values];
-    });
+    console.log('Adding note...');
+    NoteDataService.addNote({ ...newNote, userId: user.userId })
+      .then((response) => {
+        console.log(response.data);
+      })
+      .catch((e) => console.error(e));
   }
 
   function deleteNote(id: number) {
@@ -117,6 +104,18 @@ function App() {
       });
     });
   }
+
+  useEffect(() => {
+    getLocalUser();
+  }, []);
+
+  useEffect(() => {
+    requestAccessToken();
+  }, [user]);
+
+  useEffect(() => {
+    retrieveNotes();
+  }, [user]);
 
   return (
     <CssVarsProvider theme={theme}>
@@ -150,17 +149,18 @@ function App() {
                 )}
                 <Box sx={{ flexGrow: 1, mx: 2 }}>
                   <Masonry columns={{ xs: 1, sm: 2, md: 4 }} spacing={1}>
-                    {notes.map((note, index) => (
-                      <Note
-                        key={index}
-                        id={index}
-                        title={note?.title}
-                        content={note?.content}
-                        onDelete={deleteNote}
-                        onArchive={archiveNote}
-                        onOpen={openNoteDialog}
-                      />
-                    ))}
+                    {notes &&
+                      notes.map((note, index) => (
+                        <Note
+                          key={index}
+                          id={index}
+                          title={note?.title}
+                          content={note?.content}
+                          onDelete={deleteNote}
+                          onArchive={archiveNote}
+                          onOpen={openNoteDialog}
+                        />
+                      ))}
                   </Masonry>
                 </Box>
               </>

@@ -28,7 +28,7 @@ export default class UsersDAO {
 		try {
 			const result = users.findOne({
 				username: username,
-				refreshTokens: [token],
+				refreshTokens: token,
 			});
 			return result;
 		} catch (e) {

@@ -1,6 +1,8 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Box, Button, TextField } from '@mui/material';
 import AuthService from '../services/auth';
+import { access } from 'fs';
+import { WindowSharp } from '@mui/icons-material';
 
 function Login() {
   const [userLogin, setUserLogin] = React.useState({
@@ -17,6 +19,12 @@ function Login() {
     AuthService.login(userLogin)
       .then((response) => {
         console.log(response.data);
+        const { userId, username, refreshToken } = response.data;
+        window.localStorage.setItem('canislupus', refreshToken);
+        window.localStorage.setItem(
+          'user',
+          JSON.stringify({ userId: userId, username: username })
+        );
       })
       .catch((e) => console.log(e));
   };

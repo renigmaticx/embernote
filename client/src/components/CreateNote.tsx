@@ -31,14 +31,19 @@ function CreateNote(props: any) {
   const greetings = 'Ignite ⭐ your ideas 💡 by adding a note. 📔📓';
   const [note, setNote] = useState({
     title: '',
-    content: greetings
+    content: greetings,
+    date: ''
   });
 
   const [isExpanded, setExpanded] = useState(false);
 
   function handleChange(event: any) {
     const { name, value } = event.target;
-    setNote((values) => ({ ...values, [name]: value }));
+    setNote((values) => ({
+      ...values,
+      [name]: value,
+      date: new Date().toISOString()
+    }));
   }
 
   function handleOnClick(event: any) {
@@ -46,14 +51,15 @@ function CreateNote(props: any) {
     if (event.target.id === 'note-content' && note.content === greetings) {
       setNote({
         title: '',
-        content: ''
+        content: '',
+        date: ''
       });
     }
   }
 
   function handleAddNote(event: any) {
     (!!note.content || !!note.title) && props.onAdd(note);
-    setNote({ title: '', content: '' });
+    setNote({ title: '', content: '', date: '' });
     setExpanded(false);
   }
 
